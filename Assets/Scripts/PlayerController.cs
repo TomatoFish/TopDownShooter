@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Stats")] // TODO: move to config
     public float WalkSpeed;
+    public float WalkAcceleration;
     public float RotationSpeed;
     public float BodyRotationAngle;
     public float Height = 1.65f;
@@ -32,6 +33,8 @@ public class PlayerController : MonoBehaviour
     public Vector3 GetPlayerMoveVector => relativeMove;
     public InputController Input => GameEnterPoint.Instance?.InputController;
 
+    public bool IsAiming => isAiming;
+    
     private void Awake()
     {
         if (Animator == null)
@@ -54,15 +57,13 @@ public class PlayerController : MonoBehaviour
         UpdateAnimatorTranslate();
     }
 
-    private void LateUpdate()
+    public Vector3 GetMouseLookDirectionWeapon()
     {
-        if (isAiming)
-        {
-            var lookDir = GetMouseLookDirection();
-            var angle = Vector3.Lerp(PlayerTransformRotation.forward, lookDir, RotationSpeed * Time.deltaTime);
-
-            weaponController.SetLook(GetMouseLookForward());
-        }
+        var weaponScreenPos = camera.WorldToScreenPoint(PlayerTransformRotation.position + Vector3.up * weaponController.transform.position.y);
+        var playerScreenPosV3 = new Vector3(weaponScreenPos.x, 0, weaponScreenPos.y);
+        var lookVectorV3 = new Vector3(lookVector.x, 0, lookVector.y);
+        
+        return (lookVectorV3 - playerScreenPosV3);
     }
 
     private void OnEnable()
@@ -148,7 +149,10 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateLook(float deltaTime)
     {
-        var lookDir = GetMouseLookDirection();
+        var lookDir = GetMouseLookDirectionRelative();
+        lookDir.y = 0;
+        lookDir = lookDir.normalized;
+        
         var angle = Vector3.Lerp(PlayerTransformRotation.forward, lookDir, RotationSpeed * deltaTime);
 
 #if UNITY_EDITOR
@@ -161,9 +165,10 @@ public class PlayerController : MonoBehaviour
     private void UpdateMovement(float deltaTime)
     {
         var v3_mov = new Vector3(moveVector.x, 0, moveVector.y);
-
-        translateMov = Vector3.Lerp(translateMov, v3_mov, (WalkSpeed * deltaTime) / Vector3.Distance(translateMov, v3_mov));
-        PlayerTransformMovement.Translate(translateMov * WalkSpeed * deltaTime, Space.World);
+        var speed = WalkSpeed * deltaTime;
+        
+        translateMov = Vector3.Lerp(translateMov, v3_mov, speed * WalkAcceleration / Vector3.Distance(translateMov, v3_mov));
+        PlayerTransformMovement.Translate(translateMov * speed, Space.World);
 
 #if UNITY_EDITOR
         Debug.DrawLine(PlayerTransformMovement.position, PlayerTransformMovement.position + v3_mov, Color.green);
@@ -175,17 +180,32 @@ public class PlayerController : MonoBehaviour
 
     public Vector3 GetMouseLookDirection()
     {
-        Vector2 playerScreenPos = camera.WorldToScreenPoint(PlayerTransformRotation.position + Vector3.up * Height);
-        Vector2 playerLook = (lookVector - playerScreenPos).normalized;
-
-        return new Vector3(playerLook.x, 0, playerLook.y);
+        var playerScreenPos = camera.WorldToScreenPoint(PlayerTransformRotation.position + Vector3.up * Height);
+        var playerScreenPosV3 = new Vector3(playerScreenPos.x, 0, playerScreenPos.y);
+        var lookVectorV3 = new Vector3(lookVector.x, 0, lookVector.y);
+        
+        return (lookVectorV3 - playerScreenPosV3).normalized;
+    }
+    
+    public Vector3 GetMouseLookDirectionRelative()
+    {
+        var lookVectorV3 = GetRelativeMousePosition();
+        
+        return (lookVectorV3 - (PlayerTransformRotation.position + Vector3.up * Height)).normalized;
     }
 
-    public Vector3 GetMouseLookForward()
+    public Vector3 GetRelativeMousePosition()
     {
-        Vector2 playerScreenPos = camera.WorldToScreenPoint(PlayerTransformRotation.position + Vector3.up * Height);
-        float lookLength = (lookVector - playerScreenPos).magnitude;
-
-        return PlayerTransformRotation.forward * lookLength + Vector3.up * Height;
+        var ray = camera.ScreenPointToRay(lookVector);
+        Vector3 position;
+        if (Physics.Raycast(ray, out var hitInfo, 100, Tools.LayerHelper.PointerHitLayer))
+        {
+            var hitPointToCameraV3 = camera.transform.position - hitInfo.point;
+            var hitPointToHeightLength = (Height * hitPointToCameraV3.magnitude / camera.transform.position.y);
+            position = hitInfo.point + hitPointToCameraV3.normalized * hitPointToHeightLength;
+        }
+        else position = PlayerTransformRotation.forward;
+        
+        return position;
     }
 }

@@ -20,11 +20,13 @@ namespace Assets.Scripts
 
         private void OnAnimatorIK(int layerIndex)
         {
-            var lookDir = controller.GetMouseLookDirection();
-            var angle = Vector3.Lerp(playerBoneBodyRotation.forward, lookDir, controller.RotationSpeed * Time.deltaTime);
-
-            animator.SetLookAtWeight(leftFootRotationWeight, leftFootRotationWeight, leftFootRotationWeight);
-            animator.SetLookAtPosition(playerBoneBodyRotation.position + angle);
+            // var lookDir = controller.GetMouseLookDirection();
+            // var angle = Vector3.Lerp(playerBoneBodyRotation.forward, lookDir, controller.RotationSpeed * Time.deltaTime);
+            //
+            // animator.SetLookAtWeight(leftFootRotationWeight, leftFootRotationWeight, leftFootRotationWeight);
+            // animator.SetLookAtPosition(playerBoneBodyRotation.position + angle);
+            
+            
             //playerBoneBodyRotation.LookAt(playerBoneBodyRotation.position + angle);
 
 

@@ -1,24 +1,35 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
     class PlayerWeaponController : MonoBehaviour
     {
+        public PlayerController PlayerController;
         public LineRenderer LineRenderer;
         public Transform StartPosition;
 
-        public void SetLook(Vector3 target)
-        {
-            transform.LookAt(target);
-
-            //transform.parent.Rotate(transform.parent.rotation.x, transform.parent.rotation.y, transform.parent.rotation.z);
-            //transform.parent.localEulerAngles += new Vector3(0, 0, -90);
-        }
-
         private void Update()
         {
-            LineRenderer.SetPosition(0, StartPosition.position);
-            LineRenderer.SetPosition(1, StartPosition.position + StartPosition.forward * 10);
+            LineRenderer.enabled = PlayerController.IsAiming;
+            if (PlayerController.IsAiming)
+            {
+                LineRenderer.SetPosition(0, StartPosition.position);
+                LineRenderer.SetPosition(1, StartPosition.position + StartPosition.forward * 10);
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (PlayerController.IsAiming)
+            {
+                var targetLook = PlayerController.GetRelativeMousePosition();
+                if (targetLook.magnitude < 1)
+                {
+                    targetLook = PlayerController.GetMouseLookDirectionRelative();
+                }
+                transform.LookAt(targetLook);
+            }
         }
     }
 }
