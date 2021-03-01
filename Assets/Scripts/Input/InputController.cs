@@ -12,7 +12,7 @@ namespace Assets.Scripts.Input
         public Action<bool> OnFire;
         public Action<bool> OnCrouch;
         public Action OnMelee;
-        public Action<int> OnWeaponChange;
+        public Action<int> OnItemChange;
 
         public PlayerInput InputActions { get; private set; }
 
@@ -28,8 +28,8 @@ namespace Assets.Scripts.Input
             InputActions.Character.Melee.performed += MeleeHandler;
             InputActions.Character.Crouch.performed += CrouchHandler;
             InputActions.Character.Crouch.canceled += CrouchCancelHandler;
-            InputActions.Character.Weapon0.performed += Weapon0Handler;
-            InputActions.Character.Weapon1.performed += Weapon1Handler;
+            InputActions.Character.Item0.performed += Item0Handler;
+            InputActions.Character.Item1.performed += Item1Handler;
         }
 
         public void Dispose()
@@ -64,10 +64,10 @@ namespace Assets.Scripts.Input
         private void CrouchCancelHandler(InputAction.CallbackContext context) =>
             OnCrouch?.Invoke(false);
 
-        private void Weapon0Handler(InputAction.CallbackContext context) =>
-            OnWeaponChange?.Invoke(0);
+        private void Item0Handler(InputAction.CallbackContext context) =>
+            OnItemChange?.Invoke(0);
 
-        private void Weapon1Handler(InputAction.CallbackContext context) =>
-            OnWeaponChange?.Invoke(1);
+        private void Item1Handler(InputAction.CallbackContext context) =>
+            OnItemChange?.Invoke(1);
     }
 }

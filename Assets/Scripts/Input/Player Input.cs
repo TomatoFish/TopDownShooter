@@ -67,7 +67,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Weapon0"",
+                    ""name"": ""Item0"",
                     ""type"": ""Button"",
                     ""id"": ""7ded73a5-9e0d-49f6-9b0c-d6d47be52a90"",
                     ""expectedControlType"": ""Button"",
@@ -75,7 +75,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Weapon1"",
+                    ""name"": ""Item1"",
                     ""type"": ""Button"",
                     ""id"": ""72c49531-fb7b-401c-b061-4ed77438909a"",
                     ""expectedControlType"": ""Button"",
@@ -201,7 +201,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard And Mouse"",
-                    ""action"": ""Weapon0"",
+                    ""action"": ""Item0"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -212,7 +212,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard And Mouse"",
-                    ""action"": ""Weapon1"",
+                    ""action"": ""Item1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -246,8 +246,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_Character_Fire = m_Character.FindAction("Fire", throwIfNotFound: true);
         m_Character_Melee = m_Character.FindAction("Melee", throwIfNotFound: true);
         m_Character_Crouch = m_Character.FindAction("Crouch", throwIfNotFound: true);
-        m_Character_Weapon0 = m_Character.FindAction("Weapon0", throwIfNotFound: true);
-        m_Character_Weapon1 = m_Character.FindAction("Weapon1", throwIfNotFound: true);
+        m_Character_Item0 = m_Character.FindAction("Item0", throwIfNotFound: true);
+        m_Character_Item1 = m_Character.FindAction("Item1", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -303,8 +303,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_Character_Fire;
     private readonly InputAction m_Character_Melee;
     private readonly InputAction m_Character_Crouch;
-    private readonly InputAction m_Character_Weapon0;
-    private readonly InputAction m_Character_Weapon1;
+    private readonly InputAction m_Character_Item0;
+    private readonly InputAction m_Character_Item1;
     public struct CharacterActions
     {
         private @PlayerInput m_Wrapper;
@@ -315,8 +315,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         public InputAction @Fire => m_Wrapper.m_Character_Fire;
         public InputAction @Melee => m_Wrapper.m_Character_Melee;
         public InputAction @Crouch => m_Wrapper.m_Character_Crouch;
-        public InputAction @Weapon0 => m_Wrapper.m_Character_Weapon0;
-        public InputAction @Weapon1 => m_Wrapper.m_Character_Weapon1;
+        public InputAction @Item0 => m_Wrapper.m_Character_Item0;
+        public InputAction @Item1 => m_Wrapper.m_Character_Item1;
         public InputActionMap Get() { return m_Wrapper.m_Character; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -344,12 +344,12 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @Crouch.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnCrouch;
                 @Crouch.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnCrouch;
                 @Crouch.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnCrouch;
-                @Weapon0.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnWeapon0;
-                @Weapon0.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnWeapon0;
-                @Weapon0.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnWeapon0;
-                @Weapon1.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnWeapon1;
-                @Weapon1.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnWeapon1;
-                @Weapon1.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnWeapon1;
+                @Item0.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnItem0;
+                @Item0.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnItem0;
+                @Item0.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnItem0;
+                @Item1.started -= m_Wrapper.m_CharacterActionsCallbackInterface.OnItem1;
+                @Item1.performed -= m_Wrapper.m_CharacterActionsCallbackInterface.OnItem1;
+                @Item1.canceled -= m_Wrapper.m_CharacterActionsCallbackInterface.OnItem1;
             }
             m_Wrapper.m_CharacterActionsCallbackInterface = instance;
             if (instance != null)
@@ -372,12 +372,12 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @Crouch.started += instance.OnCrouch;
                 @Crouch.performed += instance.OnCrouch;
                 @Crouch.canceled += instance.OnCrouch;
-                @Weapon0.started += instance.OnWeapon0;
-                @Weapon0.performed += instance.OnWeapon0;
-                @Weapon0.canceled += instance.OnWeapon0;
-                @Weapon1.started += instance.OnWeapon1;
-                @Weapon1.performed += instance.OnWeapon1;
-                @Weapon1.canceled += instance.OnWeapon1;
+                @Item0.started += instance.OnItem0;
+                @Item0.performed += instance.OnItem0;
+                @Item0.canceled += instance.OnItem0;
+                @Item1.started += instance.OnItem1;
+                @Item1.performed += instance.OnItem1;
+                @Item1.canceled += instance.OnItem1;
             }
         }
     }
@@ -399,7 +399,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         void OnFire(InputAction.CallbackContext context);
         void OnMelee(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
-        void OnWeapon0(InputAction.CallbackContext context);
-        void OnWeapon1(InputAction.CallbackContext context);
+        void OnItem0(InputAction.CallbackContext context);
+        void OnItem1(InputAction.CallbackContext context);
     }
 }

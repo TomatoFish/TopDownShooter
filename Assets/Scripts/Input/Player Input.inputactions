@@ -54,7 +54,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Weapon0",
+                    "name": "Item0",
                     "type": "Button",
                     "id": "7ded73a5-9e0d-49f6-9b0c-d6d47be52a90",
                     "expectedControlType": "Button",
@@ -62,7 +62,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Weapon1",
+                    "name": "Item1",
                     "type": "Button",
                     "id": "72c49531-fb7b-401c-b061-4ed77438909a",
                     "expectedControlType": "Button",
@@ -188,7 +188,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard And Mouse",
-                    "action": "Weapon0",
+                    "action": "Item0",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -199,7 +199,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard And Mouse",
-                    "action": "Weapon1",
+                    "action": "Item1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
