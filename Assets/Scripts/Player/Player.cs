@@ -1,4 +1,5 @@
 using System;
+using Assets.Scripts.Enemy;
 using Assets.Scripts.Input;
 using UnityEngine;
 
@@ -11,8 +12,9 @@ namespace Assets.Scripts
         public float RotationSpeed;
         public float BodyRotationAngle;
         public float Height;
+        public float AimSpeed;
 
-        public Action<int, int> OnItemChanged;
+        public Action<int> OnItemChanged;
         public Action<bool> OnAim;
         public Action<bool> OnFire;
         public Action<bool> OnCrouch;
@@ -27,7 +29,8 @@ namespace Assets.Scripts
 
         private Vector2 moveVector;
         private Vector2 lookVector;
-        private PlayerWeaponController weaponController;
+        private Vector3 mousePositionCache;
+        private PlayerItemController itemController;
         private bool aimSwitched = false;
         
         private readonly Camera camera;
@@ -47,13 +50,14 @@ namespace Assets.Scripts
             camera = Camera.main;
         }
 
-        public void SetConfig(float walkSpeed, float walkAcceleration, float rotationSpeed, float bodyRotationAngle, float height)
+        public void SetConfig(float walkSpeed, float walkAcceleration, float rotationSpeed, float bodyRotationAngle, float height, float aimSpeed)
         {
             WalkSpeed = walkSpeed;
             WalkAcceleration = walkAcceleration;
             RotationSpeed = rotationSpeed;
             BodyRotationAngle = bodyRotationAngle;
             Height = height;
+            AimSpeed = aimSpeed;
         }
 
         public void EnableInput()
@@ -129,7 +133,7 @@ namespace Assets.Scripts
 
         public void ItemChange(int itemIndex)
         {
-            OnItemChanged?.Invoke(CurrentItem, itemIndex);
+            OnItemChanged?.Invoke(itemIndex);
             CurrentItem = itemIndex;
         }
 
@@ -137,7 +141,7 @@ namespace Assets.Scripts
         {
             var weaponScreenPos =
                 camera.WorldToScreenPoint(rotationTransform.position +
-                                          Vector3.up * weaponController.transform.position.y);
+                                          Vector3.up * itemController.transform.position.y);
             var playerScreenPosV3 = new Vector3(weaponScreenPos.x, 0, weaponScreenPos.y);
             var lookVectorV3 = new Vector3(lookVector.x, 0, lookVector.y);
 
@@ -156,6 +160,7 @@ namespace Assets.Scripts
         public Vector3 GetMovementTranslate(float deltaTime)
         {
             var v3_mov = new Vector3(moveVector.x, 0, moveVector.y);
+            v3_mov = Quaternion.Euler(0, camera.transform.rotation.eulerAngles.y, 0) * v3_mov;
             TranslateMov = Vector3.Lerp(TranslateMov, v3_mov, GetSpeed(deltaTime) * WalkAcceleration / Vector3.Distance(TranslateMov, v3_mov));
                 
             return TranslateMov;
@@ -163,30 +168,47 @@ namespace Assets.Scripts
 
         public float GetSpeed(float deltaTime) => WalkSpeed * deltaTime;
 
-        public Vector3 GetMousePositionRelativeHeight()
+        public Vector3 GetMousePositionRelativeHeight(float height, float floorHeight = 0)
         {
             var ray = camera.ScreenPointToRay(lookVector);
-            Vector3 position = Vector3.zero;
-            if (Physics.Raycast(ray, out var hitInfo, 100, Tools.LayerHelper.PointerHitLayer))
+            RaycastHit hitInfo;
+            
+            if (Physics.Raycast(ray, out hitInfo, 100, Tools.LayerHelper.PointerEnemyHitLayer))
             {
-                var hitPointToCameraV3 = camera.transform.position - hitInfo.point;
-                var hitPointToHeightLength = (Height * hitPointToCameraV3.magnitude / camera.transform.position.y);
-                position = hitInfo.point + hitPointToCameraV3.normalized * hitPointToHeightLength;
+                var hittable = hitInfo.transform.GetComponent<IHittable>();
+                if (hittable != null)
+                {
+                    height = hittable.Position.y - floorHeight;
+                }
             }
 
-            return position;
+            if (Physics.Raycast(ray, out hitInfo, 100, Tools.LayerHelper.PointerFloorHitLayer))
+            {
+                var hitPointToCameraV3 = camera.transform.position - hitInfo.point;
+                var hitPointToHeightLength = (height * hitPointToCameraV3.magnitude / (camera.transform.position.y - hitInfo.point.y));
+                mousePositionCache = hitInfo.point + hitPointToCameraV3.normalized * hitPointToHeightLength;
+            }
+
+            return mousePositionCache;
         }
 
         public Vector3 GetMousePositionRelativeFloor()
         {
-            var relativeHeightPos = GetMousePositionRelativeHeight();
-            relativeHeightPos.y -= Height;
+            var ray = camera.ScreenPointToRay(lookVector);
+            if (Physics.Raycast(ray, out var hitInfo, 100, Tools.LayerHelper.PointerFloorHitLayer))
+            {
+                return hitInfo.point;
+            }
+
+            var relativeHeightPos = GetMousePositionRelativeHeight(Height);
+            relativeHeightPos.y = 0;
             return relativeHeightPos;
         }
         
         public Vector3 GetCameraTargetPosition(Transform positionTransform, float maxRadiusSqr)
         {
-            var direction = GetMousePositionRelativeHeight() - positionTransform.position;
+            var direction = GetMousePositionRelativeFloor() - positionTransform.position;
+            direction.y = positionTransform.position.y;
             var distance = direction.magnitude / 2;
             var length = Mathf.Min(maxRadiusSqr, distance);
             var targetPosition = direction.normalized * length;
