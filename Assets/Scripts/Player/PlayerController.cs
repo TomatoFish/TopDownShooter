@@ -9,45 +9,54 @@ public class PlayerController : MonoBehaviour
     public Transform PlayerTransformMovement;
     public Transform PlayerTransformRotation;
     public Rigidbody PlayerRigidbody;
-    public PlayerWeaponController WeaponController;
-
+    public PlayerItemController ItemController;
+    public PlayerAimController AimController;
+    
     [Header("Stats")] // TODO: move to config
     public float WalkSpeed;
     public float WalkAcceleration;
     public float RotationSpeed;
     public float BodyRotationAngle;
     public float Height = 1.65f;
-
+    public float AimSpeed;
+    
     private Vector3 relativeMove;
 
     public Player Player { get; private set; }
-
     public bool IsAiming => Player.IsAiming;
+    public Vector3 WeaponPosition => PlayerTransformRotation.InverseTransformPoint(ItemController.transform.position);
 
     public void Init(Player player)
     {
         Player = player;
-        player.SetConfig(WalkSpeed, WalkAcceleration, RotationSpeed, BodyRotationAngle, Height);
+        player.SetConfig(WalkSpeed, WalkAcceleration, RotationSpeed, BodyRotationAngle, Height, AimSpeed);
+        ItemController.Init(this);
+        AimController.Init(this);
+        
         EnableActions();
-        //WeaponController = GetComponentInChildren<PlayerWeaponController>();
-        WeaponController.Init(this);
     }
     
     public Vector3 GetCameraTargetPosition(float maxRadiusSqr)
     {
         if (IsAiming)
-            return Player.GetCameraTargetPosition(PlayerTransformRotation, maxRadiusSqr) + PlayerTransformMovement.position;
-        else
-            return PlayerTransformMovement.position;
+        {
+            var newPos = Player.GetCameraTargetPosition(PlayerTransformRotation, maxRadiusSqr) + PlayerTransformMovement.position;
+            newPos.y = PlayerTransformRotation.position.y;
+            return newPos;
+        }
+        
+        return PlayerTransformMovement.position;
     }
     
-    public Vector3 GetMouseLookDirection()
+    public Vector3 GetMouseLookDirection(float floorHeight)
     {
-        var lookVectorV3 = Player.GetMousePositionRelativeFloor();
+        var lookVectorV3 = Player.GetMousePositionRelativeHeight(Height);
         if (lookVectorV3 == Vector3.zero)
         {
             lookVectorV3 = PlayerTransformRotation.forward;
         }
+
+        lookVectorV3.y = floorHeight;
     
         return (lookVectorV3 - PlayerTransformRotation.position).normalized;
     }
@@ -78,22 +87,22 @@ public class PlayerController : MonoBehaviour
         if (Player == null) return;
         
         Player.EnableInput();
-        Player.OnItemChanged += ItemChangedHandler;
         Player.OnAim += AimHandler;
         Player.OnFire += FireHandler;
         Player.OnMelee += MeleeHandler;
         Player.OnCrouch += CrouchHandler;
-        Player.ItemChange(0);
+        ItemController.EnableActions();
+        Player.ItemChange(Player.CurrentItem);
     }
 
     private void DisableActions()
     {
         Player.DisableInput();
-        Player.OnItemChanged -= ItemChangedHandler;
         Player.OnAim -= AimHandler;
         Player.OnFire -= FireHandler;
         Player.OnMelee -= MeleeHandler;
         Player.OnCrouch -= CrouchHandler;
+        ItemController.DisableActions();
     }
     
     private void AimHandler(bool isAiming)
@@ -103,7 +112,8 @@ public class PlayerController : MonoBehaviour
 
     private void FireHandler(bool isFiring)
     {
-        Animator.SetBool("IsAttacking", isFiring);
+        //Animator.SetBool("IsAttacking", isFiring);
+        //WeaponController.Shoot();
     }
 
     private void CrouchHandler(bool isCrouching)
@@ -114,14 +124,6 @@ public class PlayerController : MonoBehaviour
     private void MeleeHandler()
     {
         Animator.SetTrigger("IsAttackingMelee");
-    }
-
-    private void ItemChangedHandler(int prewItem, int curtItem)
-    {
-        Animator.SetLayerWeight(prewItem + 2, 0);
-        Animator.SetLayerWeight(curtItem + 2, 1);
-        Animator.SetInteger("Weapon", curtItem);
-        WeaponController.SetItem(curtItem);
     }
 
     private void UpdateAnimatorTranslate()
@@ -139,16 +141,16 @@ public class PlayerController : MonoBehaviour
     
     public void UpdateLook(float deltaTime)
     {
-        var lookDir = GetMouseLookDirection();
+        var lookDir = GetMouseLookDirection(PlayerTransformRotation.position.y);
             
         // If rotation is delayed
-        // var angle = Vector3.Lerp(rotationTransform.forward, lookDir, RotationSpeed * deltaTime);
+        var angle = Vector3.Lerp(PlayerTransformRotation.forward, lookDir, RotationSpeed * deltaTime);
 
 #if UNITY_EDITOR
         Debug.DrawLine(PlayerTransformRotation.position, PlayerTransformRotation.position + lookDir, Color.red);
 #endif
 
-        PlayerTransformRotation.LookAt(PlayerTransformRotation.position + lookDir);
+        PlayerTransformRotation.LookAt(PlayerTransformRotation.position + angle);
     }
 
     public void UpdateMovement(float deltaTime)
