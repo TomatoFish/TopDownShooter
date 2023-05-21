@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 544cd9229c6f4f27aa9d6b02a7adf31c, type: 3}
+  m_Name: Dummy
+  m_EditorClassIdentifier: 
+  _type: 1
+  _object:
+    _reference:
+      m_AssetGUID: 9e8f63a2da473314faa235667c7c462f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  _baseProperties:
+    _maxShield: 0
+    _maxHealth: 0
+    _minHealth: 0
+  _moveProperties:
+    _walkSpeed: 2
+    _walkAcceleration: 10
+    _rotationSpeed: 1
+    _bodyRotationAngle: 1
+    _height: 1.6
+    _aimSpeed: 1
