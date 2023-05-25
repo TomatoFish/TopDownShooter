@@ -15,7 +15,7 @@ namespace Game
         public void Initialize()
         {
             _sceneManager.LoadScene("UIScene");
-            _sceneManager.LoadScene("SampleScene");
+            _sceneManager.LoadScene("MenuScene");
         }
     }
 }

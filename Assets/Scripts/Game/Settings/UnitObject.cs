@@ -15,7 +15,7 @@ namespace Game.Settings
 
         public async Task<object> LoadObject()
         {
-            _loadTask ??= _reference.LoadAssetAsync<object>().Task;
+            _loadTask ??= GameObjectHelper.LoadObject(_reference);
 
             return await _loadTask;
         }

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Game.Level;
+﻿using Game.Level;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Zenject;
 
 namespace Game.UI
 {
+    [UIWidget("DebugUnit")]
     public class DebugUnit : MonoBehaviour
     {
         [Inject] private SignalBus _signalBus;
