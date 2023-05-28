@@ -1,16 +1,13 @@
-﻿using Zenject;
-
-namespace Game.UI
+﻿namespace Game.UI
 {
-    public class UIState : IInitializable
+    public class UIState
     {
         private GameUIState _state;
 
-        public GameUIState State => _state;
-        
-        public void Initialize()
+        public GameUIState State
         {
-            
+            get => _state;
+            set => _state = value;
         }
     }
 }

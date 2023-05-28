@@ -26,6 +26,11 @@ namespace Game
             Container.DeclareSignal<SpawnUnitSignal>();
             Container.DeclareSignal<UnitSpawnedSignal>();
             Container.DeclareSignal<DestroyUnitSignal>();
+            
+            // UI Signals
+            Container.DeclareSignal<ChangeUIStateSignal>();
+            Container.DeclareSignal<ShowWidget>();
+            Container.DeclareSignal<HideWidget>();
         }
     }
 }

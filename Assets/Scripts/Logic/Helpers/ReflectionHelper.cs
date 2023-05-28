@@ -6,10 +6,10 @@ namespace Logic
 {
     public static class ReflectionHelper
     {
-        public static IEnumerable<System.Type> FindDerivedTypes<T>(Assembly assembly)
+        public static List<System.Type> FindDerivedTypes<T>(Assembly assembly)
         {
             var baseType = typeof(T);
-            return assembly.GetTypes().Where(type => type != baseType && type.IsAssignableFrom(baseType));
+            return assembly.GetTypes().Where(type => type != baseType && baseType.IsAssignableFrom(type)).ToList();
         }
     }
 }

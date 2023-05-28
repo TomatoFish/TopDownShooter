@@ -6,7 +6,7 @@ using Zenject;
 namespace Game.UI
 {
     [UIWidget("DebugUnit")]
-    public class DebugUnit : MonoBehaviour
+    public class DebugUnit : UIWidget
     {
         [Inject] private SignalBus _signalBus;
         //[Inject] private UnitRegistry _unitRegistry;
