@@ -1,10 +1,10 @@
 ﻿namespace Game.UI
 {
-    public class HideWidget
+    public class HideWidgetSignal
     {
         public readonly System.Type WidgetType;
 
-        public HideWidget(System.Type type)
+        public HideWidgetSignal(System.Type type)
         {
             WidgetType = type;
         }

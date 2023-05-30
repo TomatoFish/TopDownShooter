@@ -17,7 +17,8 @@ namespace Game.UI
         private DiContainer _container;
         private SignalBus _signalBus;
         private UIState _uiState;
-        private GameObjectDictionaryPool _pool;
+        private GameObjectDictionaryPool _pool; // widget pool
+        private Stack<System.Type> _order; // opened widgets order
 
         private GameUIState State => _uiState.State;
 
@@ -36,15 +37,19 @@ namespace Game.UI
             };
             
             _signalBus.Subscribe<ChangeUIStateSignal>(OnChangeUIStateSignal);
-            _signalBus.Subscribe<ShowWidget>(OnShowWidget);
-            _signalBus.Subscribe<HideWidget>(OnHideWidget);
+            _signalBus.Subscribe<ShowWidgetSignal>(OnShowWidgetSignal);
+            _signalBus.Subscribe<HideWidgetSignal>(OnHideWidgetSignal);
+            _signalBus.Subscribe<UIStepBackSignal>(OnUIStepBackSignal);
+            _signalBus.Subscribe<HideAllWidgetsSignal>(OnHideAllWidgetsSignal);
         }
         
         public void Dispose()
         {
             _signalBus.Unsubscribe<ChangeUIStateSignal>(OnChangeUIStateSignal);
-            _signalBus.Unsubscribe<ShowWidget>(OnShowWidget);
-            _signalBus.Unsubscribe<HideWidget>(OnHideWidget);
+            _signalBus.Unsubscribe<ShowWidgetSignal>(OnShowWidgetSignal);
+            _signalBus.Unsubscribe<HideWidgetSignal>(OnHideWidgetSignal);
+            _signalBus.Unsubscribe<UIStepBackSignal>(OnUIStepBackSignal);
+            _signalBus.Unsubscribe<HideAllWidgetsSignal>(OnHideAllWidgetsSignal);
             _pool?.Dispose();
         }
 
@@ -71,6 +76,7 @@ namespace Game.UI
 
             await Task.WhenAll(loadTasks);
             _pool = new GameObjectDictionaryPool(objects);
+            _order = new Stack<System.Type>();
         }
 
         private void OnChangeUIStateSignal(ChangeUIStateSignal signal)
@@ -78,14 +84,37 @@ namespace Game.UI
             _uiState.State = signal.State;
         }
         
-        private void OnShowWidget(ShowWidget signal)
+        private void OnShowWidgetSignal(ShowWidgetSignal signal)
         {
+            _order.Push(signal.WidgetType);
             _pool.Get(signal.WidgetType);
         }
         
-        private void OnHideWidget(HideWidget signal)
+        private void OnHideWidgetSignal(HideWidgetSignal signal)
         {
-            _pool.Release(signal.WidgetType);
+            if (!_order.TryPeek(out var lastWidgetType) || lastWidgetType != signal.WidgetType) return;
+            HideWidget();
+        }
+
+        private void OnUIStepBackSignal(UIStepBackSignal signal)
+        {
+            HideWidget();
+        }
+
+        private void HideWidget()
+        {
+            if (_order.TryPop(out var typeToHide))
+            {
+                _pool.Release(typeToHide);
+            }
+        }
+
+        private void OnHideAllWidgetsSignal(HideAllWidgetsSignal signal)
+        {
+            for (int i = 0; i < _order.Count; i++)
+            {
+                HideWidget();
+            }
         }
     }
 }

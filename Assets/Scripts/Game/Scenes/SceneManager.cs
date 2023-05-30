@@ -7,20 +7,20 @@ namespace Game.Scenes
 {
     public class SceneManager
     {
-        private List<Scene> _currentScenes;
+        private readonly List<Scene> _availableScenes;
         public string[] _levels;
 
         public SceneManager(params string[] levels)
         {
             _levels = levels;
-            _currentScenes = new List<Scene>();
+            _availableScenes = new List<Scene>();
             for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
             {
-                _currentScenes.Add(UnityEngine.SceneManagement.SceneManager.GetSceneAt(i));
+                _availableScenes.Add(UnityEngine.SceneManagement.SceneManager.GetSceneAt(i));
             }
         }
 
-        public async void LoadScene(string sceneName, Action sceneLaodedCallback = null)
+        public async void LoadScene(string sceneName, Action sceneLoadedCallback = null)
         {
             var loadOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
             while (!loadOperation.isDone)
@@ -28,25 +28,25 @@ namespace Game.Scenes
                 await Task.Yield();
             }
             var newScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName(sceneName);
-            _currentScenes.Add(newScene);
+            _availableScenes.Add(newScene);
             UnityEngine.SceneManagement.SceneManager.SetActiveScene(newScene);
-            sceneLaodedCallback?.Invoke();
+            sceneLoadedCallback?.Invoke();
         }
 
-        public async void UnloadScene(string sceneName, Action sceneUnlaodedCallback = null)
+        public async void UnloadScene(string sceneName, Action sceneUnloadedCallback = null)
         {
             var sceneNameLow = sceneName.ToLower();
-            for (int i = 0; i < _currentScenes.Count; i++)
+            for (int i = 0; i < _availableScenes.Count; i++)
             {
-                if (_currentScenes[i].name.ToLower().Equals(sceneNameLow))
+                if (_availableScenes[i].name.ToLower().Equals(sceneNameLow))
                 {
-                    var unloadOperation = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(_currentScenes[i]);
+                    var unloadOperation = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(_availableScenes[i]);
                     while (!unloadOperation.isDone)
                     {
                         await Task.Yield();
                     }
-                    _currentScenes.RemoveAt(i);
-                    sceneUnlaodedCallback?.Invoke();
+                    _availableScenes.RemoveAt(i);
+                    sceneUnloadedCallback?.Invoke();
 
                     break;
                 }

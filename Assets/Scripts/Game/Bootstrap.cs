@@ -33,7 +33,7 @@ namespace Game
 
         private void OpenMenu()
         {
-            _signalBus.Fire(new ShowWidget(typeof(MainMenuWidget)));
+            _signalBus.Fire(new ShowWidgetSignal(typeof(MainMenuWidget)));
         }
     }
 }

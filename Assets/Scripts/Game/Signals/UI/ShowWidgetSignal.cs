@@ -1,10 +1,10 @@
 ﻿namespace Game.UI
 {
-    public class ShowWidget
+    public class ShowWidgetSignal
     {
         public readonly System.Type WidgetType;
 
-        public ShowWidget(System.Type type)
+        public ShowWidgetSignal(System.Type type)
         {
             WidgetType = type;
         }

@@ -1,6 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Content/UI/USS/DefaultButton.uss?fileID=7433441132597879392&amp;guid=267ed986f78a1034d832c67b7729dfb9&amp;type=3#DefaultButton" />
     <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); width: 50%; align-items: stretch; align-self: center; justify-content: center;">
-        <ui:Button text="Level" display-tooltip-when-elided="true" binding-path="RunLevel" name="LevelButton" style="align-items: stretch; visibility: visible; display: flex; background-color: rgba(188, 188, 188, 0.47);" />
-        <ui:Button text="Exit" display-tooltip-when-elided="true" binding-path="ExitGame" name="ExitButton" style="background-color: rgba(188, 188, 188, 0.47);" />
+        <ui:Button text="Level" display-tooltip-when-elided="true" name="LevelButton" class="blue" style="align-items: stretch; visibility: visible; display: flex; background-color: rgba(188, 188, 188, 0.47);" />
+        <ui:Button text="Exit" display-tooltip-when-elided="true" name="ExitButton" class="blue" style="background-color: rgba(188, 188, 188, 0.47);" />
     </ui:VisualElement>
 </ui:UXML>
