@@ -3,11 +3,13 @@ using Zenject;
 
 namespace Game.UI
 {
-    [UIWidget("MainMenu")]
     public class MainMenuWidget : UIWidget
     {
         private SignalBus _signalBus;
-        
+
+        protected override string WidgetName => "MainMenu";
+        public override bool IsAdditive => false;
+
         private Button _levelButton;
         private Button _exitButton;
 
@@ -16,24 +18,20 @@ namespace Game.UI
         {
             _signalBus = signalBus;
         }
-        
-        private void Awake()
+
+        public MainMenuWidget(UIDocument uiDocument) : base(uiDocument)
         {
-            var root = GetComponent<UIDocument>().rootVisualElement;
-            _levelButton = root.Q<Button>("LevelButton");
-            _exitButton = root.Q<Button>("ExitButton");
-            
-            _levelButton.SetEnabled(true);
-            _exitButton.SetEnabled(true);
+            _levelButton = GetVisualElement<Button>("LevelButton");
+            _exitButton = GetVisualElement<Button>("ExitButton");
         }
-        
-        private void Start()
+
+        protected override void ShowInternal()
         {
             _levelButton.clicked += RunLevelButtonHandler;
             _exitButton.clicked += ExitGameButtonHandler;
         }
 
-        private void OnDestroy()
+        protected override void HideInternal()
         {
             _levelButton.clicked -= RunLevelButtonHandler;
             _exitButton.clicked -= ExitGameButtonHandler;
@@ -41,12 +39,12 @@ namespace Game.UI
 
         private void RunLevelButtonHandler()
         {
-            _signalBus.Fire<RunLevelSignal>();
+            _signalBus.Fire(new RunLevelSignal("SampleScene"));
         }
-        
+
         private void ExitGameButtonHandler()
         {
-            _signalBus.Fire<ExitGameSignal>();
+            _signalBus.Fire(new ExitGameSignal());
         }
     }
 }

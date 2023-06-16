@@ -20,7 +20,7 @@ namespace Game.Scenes
             }
         }
 
-        public async void LoadScene(string sceneName, Action sceneLoadedCallback = null)
+        public async Task LoadScene(string sceneName, Action sceneLoadedCallback = null)
         {
             var loadOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
             while (!loadOperation.isDone)
@@ -33,7 +33,7 @@ namespace Game.Scenes
             sceneLoadedCallback?.Invoke();
         }
 
-        public async void UnloadScene(string sceneName, Action sceneUnloadedCallback = null)
+        public async Task UnloadScene(string sceneName, Action sceneUnloadedCallback = null)
         {
             var sceneNameLow = sceneName.ToLower();
             for (int i = 0; i < _availableScenes.Count; i++)

@@ -1,23 +1,18 @@
 ﻿using Game.Scenes;
 using Game.UI;
-using UnityEngine;
 using Zenject;
 
 namespace Game
 {
     public class Bootstrap : IInitializable
     {
-        [Inject(Id = "UIContainer")] private Transform _uiContainer;
-        
         private SceneManager _sceneManager;
-        private UIManager _uiManager;
         private SignalBus _signalBus;
         
         [Inject]
-        private void Construct(SignalBus signalBus, UIManager uiManager)
+        private void Construct(SignalBus signalBus)
         {
             _signalBus = signalBus;
-            _uiManager = uiManager;
         }
 
         public Bootstrap(SceneManager sceneManager)
@@ -25,9 +20,8 @@ namespace Game
             _sceneManager = sceneManager;
         }
 
-        public async void Initialize()
+        public void Initialize()
         {
-            await _uiManager.InitializePool(_uiContainer);
             _sceneManager.LoadScene("MenuScene", OpenMenu);
         }
 

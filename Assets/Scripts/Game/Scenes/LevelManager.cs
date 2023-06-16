@@ -26,10 +26,11 @@ namespace Game.Scenes
             _signalBus.Unsubscribe<RunLevelSignal>(RunLevel);
         }
 
-        private void RunLevel(RunLevelSignal signal)
+        private async void RunLevel(RunLevelSignal signal)
         {
             _signalBus.Fire(new ChangeUIStateSignal(GameUIState.Loading));
-            _sceneManager.LoadScene("SampleScene");
+            await _sceneManager.UnloadScene("MenuScene");
+            await _sceneManager.LoadScene("SampleScene");
         }
     }
 }

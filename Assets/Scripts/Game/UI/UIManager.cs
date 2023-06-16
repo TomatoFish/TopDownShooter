@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Logic;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
+using UnityEngine.UIElements;
 using Zenject;
 
 namespace Game.UI
@@ -16,9 +13,10 @@ namespace Game.UI
 
         private DiContainer _container;
         private SignalBus _signalBus;
+        private UIDocument _uiDocument;
         private UIState _uiState;
-        private GameObjectDictionaryPool _pool; // widget pool
         private Stack<System.Type> _order; // opened widgets order
+        private Dictionary<System.Type, UIWidget> _widgets; // awailable
 
         private GameUIState State => _uiState.State;
 
@@ -50,35 +48,22 @@ namespace Game.UI
             _signalBus.Unsubscribe<HideWidgetSignal>(OnHideWidgetSignal);
             _signalBus.Unsubscribe<UIStepBackSignal>(OnUIStepBackSignal);
             _signalBus.Unsubscribe<HideAllWidgetsSignal>(OnHideAllWidgetsSignal);
-            _pool?.Dispose();
         }
 
-        public async Task InitializePool(Transform parentTransform)
+        public void SetUIDocument(UIDocument uiDocument)
         {
-            var objects = new Dictionary<System.Type, GameObject>();
+            _uiDocument = uiDocument;
+
+            _order = new Stack<System.Type>();
+            _widgets = new Dictionary<Type, UIWidget>();
             var types = ReflectionHelper.FindDerivedTypes<UIWidget>(Assembly.GetAssembly(GetType()));
-            var loadTasks = new List<Task>();
             foreach (var type in types)
             {
-                var attributes = type.GetTypeInfo().GetCustomAttributes();
-                var widgetAttribute = (UIWidgetAttribute)attributes.FirstOrDefault(attribute => attribute is UIWidgetAttribute);
-                if (widgetAttribute != null)
-                {
-                    var asyncLoad = Addressables.LoadAssetAsync<GameObject>(widgetAttribute.Path);
-                    asyncLoad.Completed += handle =>
-                    {
-                        var newGameObject = _container.InstantiatePrefab(handle.Result, parentTransform);
-                        objects.Add(type, newGameObject);
-                    };
-                    loadTasks.Add(asyncLoad.Task);
-                }
+                var widget = (UIWidget)_container.Instantiate(type, new object[] { _uiDocument });
+                _widgets.Add(type, widget);
             }
-
-            await Task.WhenAll(loadTasks);
-            _pool = new GameObjectDictionaryPool(objects);
-            _order = new Stack<System.Type>();
         }
-
+        
         private void OnChangeUIStateSignal(ChangeUIStateSignal signal)
         {
             _uiState.State = signal.State;
@@ -86,8 +71,13 @@ namespace Game.UI
         
         private void OnShowWidgetSignal(ShowWidgetSignal signal)
         {
-            _order.Push(signal.WidgetType);
-            _pool.Get(signal.WidgetType);
+            if (_widgets.ContainsKey(signal.WidgetType))
+            {
+                var widgetToShow = _widgets[signal.WidgetType];
+                if (!widgetToShow.IsAdditive) HideWidget();
+                _widgets[signal.WidgetType].Show();
+                _order.Push(signal.WidgetType);
+            }
         }
         
         private void OnHideWidgetSignal(HideWidgetSignal signal)
@@ -105,7 +95,7 @@ namespace Game.UI
         {
             if (_order.TryPop(out var typeToHide))
             {
-                _pool.Release(typeToHide);
+                _widgets[typeToHide].Hide();
             }
         }
 

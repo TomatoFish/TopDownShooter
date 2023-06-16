@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Game.UI
+﻿namespace Game.UI
 {
     public enum GameUIState
     {
