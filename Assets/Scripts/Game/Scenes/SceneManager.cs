@@ -14,10 +14,6 @@ namespace Game.Scenes
         {
             _levels = levels;
             _availableScenes = new List<Scene>();
-            for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
-            {
-                _availableScenes.Add(UnityEngine.SceneManagement.SceneManager.GetSceneAt(i));
-            }
         }
 
         public async Task LoadScene(string sceneName, Action sceneLoadedCallback = null)
@@ -51,6 +47,19 @@ namespace Game.Scenes
                     break;
                 }
             }
+        }
+
+        public async Task UnloadAllScenes()
+        {
+            foreach (var scene in _availableScenes)
+            {
+                var unloadOperation = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(scene);
+                while (!unloadOperation.isDone)
+                {
+                    await Task.Yield();
+                }
+            }
+            _availableScenes.Clear();
         }
     }
 }
