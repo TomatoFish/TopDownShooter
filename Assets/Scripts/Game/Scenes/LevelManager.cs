@@ -21,14 +21,27 @@ namespace Game.Scenes
         
         public void Initialize()
         {
-            _signalBus.Subscribe<RunLevelSignal>(RunLevel);
+            _signalBus.Subscribe<RunLevelSignal>(OnRunLevelSignal);
         }
 
         public void Dispose()
         {
-            _signalBus.Unsubscribe<RunLevelSignal>(RunLevel);
+            _signalBus.Unsubscribe<RunLevelSignal>(OnRunLevelSignal);
         }
 
+        private void OnRunLevelSignal(RunLevelSignal signal)
+        {
+            switch (signal.Type)
+            {
+                case LevelType.MainMenu:
+                    RunMainMenu();
+                    break;
+                case LevelType.GamePlay:
+                    RunLevel(signal.LevelId);
+                    break;
+            }
+        }
+        
         private async void RunMainMenu()
         {
             _signalBus.Fire(new ChangeUIStateSignal(GameUIState.Loading));
@@ -37,12 +50,12 @@ namespace Game.Scenes
             _signalBus.Fire(new ChangeUIStateSignal(GameUIState.MainMenu));
         }
 
-        private async void RunLevel(RunLevelSignal signal)
+        private async void RunLevel(string levelId)
         {
             _signalBus.Fire(new ChangeUIStateSignal(GameUIState.Loading));
             await _sceneManager.UnloadAllScenes();
-            await _sceneManager.LoadScene(signal.LevelId);
-            _loadedLevelScenes.Add(signal.LevelId);
+            await _sceneManager.LoadScene(levelId);
+            _loadedLevelScenes.Add(levelId);
             _signalBus.Fire(new ChangeUIStateSignal(GameUIState.Gameplay));
         }
     }

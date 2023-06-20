@@ -6,6 +6,6 @@
         MainMenu,
         Loading,
         Gameplay,
-        DeathScreen
+        Death
     }
 }

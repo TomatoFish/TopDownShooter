@@ -39,7 +39,7 @@ namespace Game.UI
 
         private void RunLevelButtonHandler()
         {
-            _signalBus.Fire(new RunLevelSignal("SampleScene"));
+            _signalBus.Fire(new RunLevelSignal(LevelType.GamePlay, "SampleScene"));
         }
 
         private void ExitGameButtonHandler()

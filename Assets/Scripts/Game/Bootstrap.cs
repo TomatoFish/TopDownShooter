@@ -1,12 +1,9 @@
-﻿using Game.Scenes;
-using Game.UI;
-using Zenject;
+﻿using Zenject;
 
 namespace Game
 {
     public class Bootstrap : IInitializable
     {
-        private SceneManager _sceneManager;
         private SignalBus _signalBus;
         
         [Inject]
@@ -15,19 +12,14 @@ namespace Game
             _signalBus = signalBus;
         }
 
-        public Bootstrap(SceneManager sceneManager)
+        public Bootstrap(SignalBus signalBus)
         {
-            _sceneManager = sceneManager;
+            _signalBus = signalBus;
         }
 
         public void Initialize()
         {
-            _sceneManager.LoadScene("MenuScene", OpenMenu);
-        }
-
-        private void OpenMenu()
-        {
-            _signalBus.Fire(new ShowWidgetSignal(typeof(MainMenuWidget)));
+            _signalBus.Fire(new RunLevelSignal(LevelType.MainMenu));
         }
     }
 }
