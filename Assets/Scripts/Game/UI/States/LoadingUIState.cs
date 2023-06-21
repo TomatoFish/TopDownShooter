@@ -7,7 +7,7 @@
         protected override void RunState()
         {
             SignalBus.Fire(new HideAllWidgetsSignal());
-            //SignalBus.Fire(new ShowWidgetSignal(typeof(MainMenuWidget)));
+            SignalBus.Fire(new ShowWidgetSignal(typeof(LoadingScreenWidget)));
         }
     }
 }

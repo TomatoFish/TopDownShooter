@@ -1,6 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:Template name="MainMenu" src="project://database/Assets/Content/UI/UXML/MainMenu.uxml?fileID=9197481963319205126&amp;guid=830c629978e20794aa146f32166c8b15&amp;type=3#MainMenu" />
+    <ui:Template name="MainMenu" src="project://database/Assets/Content/UI/UXML/MainMenuScreen.uxml?fileID=9197481963319205126&amp;guid=830c629978e20794aa146f32166c8b15&amp;type=3#MainMenuScreen" />
     <ui:Template name="DebugUnit" src="project://database/Assets/Content/UI/UXML/DebugUnit.uxml?fileID=9197481963319205126&amp;guid=183605a7a4560fc4dbe80e33b91dde1f&amp;type=3#DebugUnit" />
+    <ui:Template name="Loading" src="project://database/Assets/Content/UI/UXML/LoadingScreen.uxml?fileID=9197481963319205126&amp;guid=85db7f751b2ec5e4bae67b5adf5799aa&amp;type=3#LoadingScreen" />
+    <ui:Instance template="Loading" name="LoadingScreen" style="display: none; position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
+    <ui:Instance template="MainMenu" name="MainMenuScreen" style="display: none; position: absolute; left: 0; top: 0; right: 0; bottom: 0;" />
     <ui:Instance template="MainMenu" name="MainMenu" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: none;" />
     <ui:Instance template="DebugUnit" name="DebugUnit" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: none;" />
 </ui:UXML>

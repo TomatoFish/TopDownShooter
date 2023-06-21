@@ -4,7 +4,7 @@ namespace Game.Level
 {
     public class Dummy : Enemy
     {
-        public Dummy(EnemyView view, UnitSettings settings) : base(view, settings)
+        public Dummy(DummyView view, UnitSettings settings) : base(view, settings)
         {
         }
 

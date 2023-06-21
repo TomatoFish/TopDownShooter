@@ -7,7 +7,7 @@ namespace Game.UI
     {
         private SignalBus _signalBus;
 
-        protected override string WidgetName => "MainMenu";
+        protected override string WidgetName => "MainMenuScreen";
         public override bool IsAdditive => false;
 
         private Button _levelButton;
@@ -39,7 +39,7 @@ namespace Game.UI
 
         private void RunLevelButtonHandler()
         {
-            _signalBus.Fire(new RunLevelSignal(LevelType.GamePlay, "SampleScene"));
+            _signalBus.Fire(new RunLevelSignal(LevelType.Gameplay, "SampleScene"));
         }
 
         private void ExitGameButtonHandler()

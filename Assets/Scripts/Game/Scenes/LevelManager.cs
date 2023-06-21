@@ -36,7 +36,7 @@ namespace Game.Scenes
                 case LevelType.MainMenu:
                     RunMainMenu();
                     break;
-                case LevelType.GamePlay:
+                case LevelType.Gameplay:
                     RunLevel(signal.LevelId);
                     break;
             }

@@ -4,7 +4,9 @@
     {
         public override void InstallBindings()
         {
-            Container.Bind<Dummy>().AsSingle();
+            base.InstallBindings();
+            
+            Container.BindInterfacesAndSelfTo<Dummy>().AsSingle();
         }
     }
 }

@@ -12,10 +12,6 @@ namespace Game.Level
         {
         }
 
-        public float WalkSpeed => Settings.MoveProperties.WalkSpeed;
-        public float WalkAcceleration => Settings.MoveProperties.WalkAcceleration;
-        public float RotationSpeed => Settings.MoveProperties.RotationSpeed;
-        public float AimSpeed => Settings.MoveProperties.AimSpeed;
         public float Height => Settings.MoveProperties.Height;
 
         public override void Dispose()

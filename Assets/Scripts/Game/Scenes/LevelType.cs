@@ -3,6 +3,6 @@
     public enum LevelType
     {
         MainMenu,
-        GamePlay
+        Gameplay
     }
 }

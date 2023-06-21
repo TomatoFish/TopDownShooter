@@ -14,7 +14,11 @@ namespace Logic.Level
         public GUID Guid => _guid;
         
         public virtual IUnitBaseProperties BaseProperties => Settings.BaseProperties;
-
+        public float WalkSpeed => Settings.MoveProperties.WalkSpeed;
+        public float WalkAcceleration => Settings.MoveProperties.WalkAcceleration;
+        public float RotationSpeed => Settings.MoveProperties.RotationSpeed;
+        public float AimSpeed => Settings.MoveProperties.AimSpeed;
+        
         public Unit(T1 view, T2 settings)
         {
             View = view;
