@@ -1,11 +1,11 @@
 ﻿using Game.Settings;
-using Logic.Level;
+using Zenject;
 
 namespace Game.Level
 {
     public class Enemy : Unit<EnemyView, UnitSettings>
     {
-        public Enemy(EnemyView view, UnitSettings settings) : base(view, settings)
+        public Enemy(EnemyView view, UnitSettings settings, SignalBus signalBus) : base(view, settings, signalBus)
         {
         }
     }

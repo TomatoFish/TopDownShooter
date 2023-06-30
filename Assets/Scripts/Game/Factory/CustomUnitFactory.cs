@@ -1,5 +1,4 @@
-﻿using Game.Settings;
-using Zenject;
+﻿using Zenject;
 
 namespace Game.Level
 {
@@ -18,10 +17,6 @@ namespace Game.Level
         }
     }
 
-    // public class UnitViewFactory : PlaceholderFactory<UnityEngine.Object, UnitSettings, UnitView>
-    // {
-    // }
-    
     public class UnitViewFactory : GameObjectFactory<UnitFactoryArgs, UnitView>
     {
     }

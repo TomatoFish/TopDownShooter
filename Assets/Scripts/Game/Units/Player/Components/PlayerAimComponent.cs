@@ -1,6 +1,7 @@
 ﻿using Game.Camera;
 using Game.Input;
 using System;
+using Game.Settings;
 using UnityEngine;
 using Zenject;
 
@@ -14,12 +15,15 @@ namespace Game.Level
         [Inject] private CameraManager _cameraManager;
         [Inject] private SignalBus _signalBus;
         [Inject] private PlayerInventoryComponent _inventory;
+        [Inject] private GameSettings _gameSettings;
 
         private Vector2 _lookVector;
         private Vector3 _mousePositionCache;
+        private bool _isAimSwitched;
+        
+        private const float AimMinSqrRange = 3.25f;
 
         public bool IsAiming { get; private set; }
-
         
         public void Initialize()
         {
@@ -35,21 +39,13 @@ namespace Game.Level
 
         public void Tick()
         {
-
-            //var targetLook = view.MovementTransform.position + view.RotationTransform.forward + Vector3.up * model.Height;
-            //if (IsAiming && (targetLook - view.MovementTransform.position).magnitude > 2f)
-            //{
-            //    targetLook = GetMousePositionRelativeHeight(model.Height, view.MovementTransform.position.y);
-            //}
-
             var targetLook = GetMousePositionRelativeHeight(_inventory.WeaponHeight, _view.MovementTransform.position.y);
-            if (IsAiming && (targetLook - _view.MovementTransform.position).magnitude < 1.8)
+            if (IsAiming && (targetLook - _view.MovementTransform.position).sqrMagnitude < AimMinSqrRange)
             {
                 targetLook = _view.MovementTransform.position + _view.RotationTransform.forward + Vector3.up * _inventory.WeaponHeight;
             }
 
-            //targetLook = Vector3.Lerp(_view.AimTarget.position, targetLook, 1 / (_view.AimTarget.position - targetLook).magnitude * _model.AimSpeed * Time.deltaTime);
-            _view.AimTarget.position = targetLook;
+            _view.AimTarget.position = Vector3.Lerp(_view.AimTarget.position, targetLook, _model.AimSpeed * Time.deltaTime);
         }
 
         public Vector3 GetMousePositionRelativeHeight(float height, float floorHeight = 0)
@@ -92,24 +88,29 @@ namespace Game.Level
 
         private void AimHandler(bool isAiming)
         {
-            //if (GameEnterPoint.Instance.DebugSettings.AimSwitch)
-            //{
-            //    if (isAiming && !aimSwitched)
-            //    {
-            //        IsAiming = !IsAiming;
-            //        aimSwitched = true;
-            //        OnAim.Invoke(IsAiming);
-            //    }
-            //    else if (!isAiming && aimSwitched)
-            //    {
-            //        aimSwitched = false;
-            //    }
-            //}
-            //else
-            //{
-            if (IsAiming != isAiming) _signalBus.TryFire(new PlayerAimSignal(isAiming));
-            IsAiming = isAiming;
-            //}
+            if (_gameSettings.AimSwitch)
+            {
+                switch (isAiming)
+                {
+                    case true when !_isAimSwitched:
+                        IsAiming = !IsAiming;
+                        _signalBus.TryFire(new PlayerAimSignal(true));
+                        break;
+                    case false when !_isAimSwitched:
+                        _isAimSwitched = true;
+                        break;
+                    case false when _isAimSwitched:
+                        IsAiming = !IsAiming;
+                        _isAimSwitched = false;
+                        _signalBus.TryFire(new PlayerAimSignal(false));
+                        break;
+                }
+            }
+            else
+            {
+                if (IsAiming != isAiming) _signalBus.TryFire(new PlayerAimSignal(isAiming));
+                IsAiming = isAiming;
+            }
         }
 
         private void LookHandler(Vector2 lookVector)

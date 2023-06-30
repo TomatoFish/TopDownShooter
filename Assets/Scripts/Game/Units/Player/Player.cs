@@ -1,6 +1,5 @@
 using System;
 using Game.Settings;
-using Logic.Level;
 using Zenject;
 
 namespace Game.Level
@@ -8,11 +7,9 @@ namespace Game.Level
     [Serializable]
     public class Player : Unit<PlayerView, UnitSettings>
     {
-        public Player(PlayerView view, UnitSettings settings) : base(view, settings)
+        public Player(PlayerView view, UnitSettings settings, SignalBus signalBus) : base(view, settings, signalBus)
         {
         }
-
-        public float Height => Settings.MoveProperties.Height;
 
         public override void Dispose()
         {

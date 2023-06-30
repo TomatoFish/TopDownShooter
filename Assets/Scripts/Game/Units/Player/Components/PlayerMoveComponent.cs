@@ -50,7 +50,7 @@ namespace Game.Level
         }
 
 
-        public void UpdateLook()
+        private void UpdateLook()
         {
             var lookDir = GetMouseLookDirection(_view.RotationTransform);
             var lookDirRelativeCamera = Quaternion.Euler(0, _cameraManager.Camera.transform.rotation.eulerAngles.y, 0) * lookDir;
