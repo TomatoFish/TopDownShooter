@@ -1,26 +1,20 @@
-﻿using Game.Settings;
-using UnityEngine;
-using Zenject;
+﻿using Zenject;
 
 namespace Game.Level
 {
-    public class CustomItemViewFactory : IFactory<int, Transform, ItemView>
+    public class CustomItemViewFactory : CustomGameObjectFactory<ItemFactoryArgs, ItemView>
     {
-        private readonly DiContainer _container;
-        private ItemRegistrySettings.Set _itemRegistry;
-
-        public CustomItemViewFactory(DiContainer container, ItemRegistrySettings.Set itemRegistry)
+        public CustomItemViewFactory(DiContainer container) : base(container)
         {
-            _container = container;
-            _itemRegistry = itemRegistry;
         }
-        
-        public ItemView Create(int id, Transform root = null)
+
+        public override ItemView Create(ItemFactoryArgs args)
         {
-            var itemView = _itemRegistry.GetItemView(id);
-            return _container.InstantiatePrefabForComponent<ItemView>(itemView, root);
+            var view  = base.Create(args);
+            
+            return view;
         }
     }
-    
-    public class ItemViewFactory : PlaceholderFactory<int, Transform, ItemView> { }
+
+    public class ItemViewFactory : PlaceholderFactory<ItemFactoryArgs, ItemView> { }
 }

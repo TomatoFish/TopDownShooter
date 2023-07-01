@@ -1,5 +1,4 @@
 ﻿using Logic;
-using UnityEngine;
 using Zenject;
 
 namespace Game.Level
@@ -9,8 +8,7 @@ namespace Game.Level
         public override void InstallBindings()
         {
             Container.BindFactory<UnitFactoryArgs, UnitView, UnitViewFactory>().FromFactory<CustomUnitFactory>();
-            Container.BindFactory<int, Transform, ItemView, ItemViewFactory>().FromFactory<CustomItemViewFactory>();
-            Container.BindFactory<int, Transform, Item, ItemFactory>().FromFactory<CustomItemFactory>();
+            Container.BindFactory<ItemFactoryArgs, ItemView, ItemViewFactory>().FromFactory<CustomItemViewFactory>();
 
             Container.BindInterfacesTo<LevelCameraController>().AsSingle().NonLazy();
             Container.BindInterfacesTo<UnitSpawnController>().AsSingle().NonLazy();

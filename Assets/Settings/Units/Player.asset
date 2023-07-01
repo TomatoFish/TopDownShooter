@@ -22,4 +22,4 @@ MonoBehaviour:
     _rotationSpeed: 1
     _bodyRotationAngle: 1
     _height: 1.6
-    _aimSpeed: 3
+    _aimSpeed: 20

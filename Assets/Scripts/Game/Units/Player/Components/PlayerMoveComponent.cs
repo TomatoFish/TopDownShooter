@@ -91,57 +91,10 @@ namespace Game.Level
             var movV3 = moveVector;
             movV3 = Quaternion.Euler(0, _cameraManager.Camera.transform.rotation.eulerAngles.y, 0) * movV3;
 
-            //if (Vector3.Dot(TranslateMov.normalized, movV3) < 0)
-            //{
-            //    TranslateMov = Vector3.Lerp(Vector3.zero, movV3 * model.WalkSpeed, 1 - Mathf.Pow(1 - model.WalkSpeed, Time.fixedDeltaTime * model.WalkAcceleration));
-            //}
-            //else
-            //{
-            //    TranslateMov = Vector3.Lerp(TranslateMov, movV3 * model.WalkSpeed, 1 - Mathf.Pow(1 - model.WalkSpeed, Time.fixedDeltaTime * model.WalkAcceleration));
-            //}
-
             TranslateMov = Vector3.Lerp(TranslateMov, movV3 * _model.WalkSpeed * multiplier, Time.fixedDeltaTime * _model.WalkAcceleration);
 
             return TranslateMov;
         }
-
-        //public Vector3 GetMousePositionRelativeHeight(float height, float floorHeight = 0)
-        //{
-        //    var cam = cameraManager.Camera;
-        //    var ray = cam.ScreenPointToRay(lookVector);
-        //    RaycastHit hitInfo;
-
-        //    if (Physics.Raycast(ray, out hitInfo, 100, Tools.LayerHelper.PointerEnemyHitLayer))
-        //    {
-        //        var hittable = hitInfo.transform.GetComponent<IHittable>();
-        //        if (hittable != null)
-        //        {
-        //            height = hittable.Position.y - floorHeight;
-        //        }
-        //    }
-
-        //    if (Physics.Raycast(ray, out hitInfo, 100, Tools.LayerHelper.PointerFloorHitLayer))
-        //    {
-        //        var hitPointToCameraV3 = cam.transform.position - hitInfo.point;
-        //        var hitPointToHeightLength = (height * hitPointToCameraV3.magnitude / (cam.transform.position.y - hitInfo.point.y));
-        //        mousePositionCache = hitInfo.point + hitPointToCameraV3.normalized * hitPointToHeightLength;
-        //    }
-
-        //    return mousePositionCache;
-        //}
-
-        //public Vector3 GetMousePositionRelativeFloor()
-        //{
-        //    var ray = cameraManager.Camera.ScreenPointToRay(lookVector);
-        //    if (Physics.Raycast(ray, out var hitInfo, 100, Tools.LayerHelper.PointerFloorHitLayer))
-        //    {
-        //        return hitInfo.point;
-        //    }
-
-        //    var relativeHeightPos = GetMousePositionRelativeHeight(model.Height);
-        //    relativeHeightPos.y = 0;
-        //    return relativeHeightPos;
-        //}
 
         public Vector3 GetMouseLookDirection(Transform rotationTransform)
         {

@@ -13,8 +13,9 @@ namespace Game.Level
         [Inject] private PlayerView _playerView;
         [Inject] private PlayerInventoryView _inventoryView;
         [Inject] private DebugSettings _debugSettings;
-        [Inject] private ItemSpawner _itemSpawner;
         [Inject] private SignalBus _signalBus;
+        [Inject] private ItemViewFactory _itemViewFactory;
+        [Inject] private ItemRegistrySettings.Set _itemRegistry;
 
         private bool _isAiming;
         private int _currentItemId = 0;
@@ -56,7 +57,7 @@ namespace Game.Level
             _items = new Dictionary<int, Item>();
             foreach (var itemId in _debugSettings.Inventory.ItemsId)
             {
-                var newWeapon = _itemSpawner.SpawnItem(itemId, weaponContainer);
+                var newWeapon = CreateItem(itemId, weaponContainer);
                 newWeapon.SetActive(itemId == _currentItemId);
                 _items.Add(itemId, newWeapon);
             }
@@ -87,6 +88,16 @@ namespace Game.Level
         {
             if (!_isAiming) return false;
             return CurrentItem.Use();
+        }
+
+        private Item CreateItem(int itemId, Transform root)
+        {
+            var prefab = _itemRegistry.GetItemView(itemId);
+            var config = _itemRegistry.GetItemConfig(itemId);
+            var args = new ItemFactoryArgs(prefab.gameObject, root, false);
+            var itemView = _itemViewFactory.Create(args);
+
+            return new Item(itemView, config);
         }
     }
 }

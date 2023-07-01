@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: InitialInstallerSettings
   m_EditorClassIdentifier: 
   Game:
-    _aimSwitch: 0
+    _aimSwitch: 1
   Debug:
     _inventory:
       _itemsId: 00000000

@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 namespace Game.Level
 {
@@ -9,6 +10,8 @@ namespace Game.Level
         [SerializeField] private LineRenderer _bulletTrail;
         [SerializeField] private Transform _aimSightTransform;
         [SerializeField] private ParticleSystem _hitEffect;
+
+        [Inject] private SignalBus _signalBus;
         
         public override Transform AimSightTransform => _aimSightTransform;
         
@@ -23,6 +26,7 @@ namespace Game.Level
                 if (hittable != null)
                 {
                     hittable.Hit(hit.point, hit.normal);
+                    _signalBus.Fire(new DamageSignal(1, hit.point, hit.normal));
                 }
                 else
                 {
