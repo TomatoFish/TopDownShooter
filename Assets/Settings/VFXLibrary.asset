@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee4dd1a45eda42a5bcb07936fdfeab20, type: 3}
+  m_Name: VFXLibrary
+  m_EditorClassIdentifier: 
+  _library:
+    _pairs:
+    - _key: bullet_muzzle_flash
+      _value: {fileID: 1743301284569550, guid: ad2ab49d0a2a17148bd51c93d977bdbc, type: 3}
+    - _key: bullet_trail
+      _value: {fileID: 6355620680157395152, guid: c04f922baf61e8d4aa65c92f3375cc2c,
+        type: 3}
+    - _key: bullet_hit_metal
+      _value: {fileID: 1315344289833135123, guid: c1297aa9423629b4e8f6f51f6f659260,
+        type: 3}

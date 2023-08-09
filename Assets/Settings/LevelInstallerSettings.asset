@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6811d349f9b9bd34e809e7f3a30b3ce5, type: 3}
   m_Name: LevelInstallerSettings
   m_EditorClassIdentifier: 
-  UnitSettings:
+  _unitSettings:
     _registry:
       _items:
       - Key: player
@@ -29,12 +29,11 @@ MonoBehaviour:
             m_SubObjectName: 
             m_SubObjectType: 
             m_EditorAssetChanged: 0
-  ItemSettings:
+  _itemSettings:
     _registry:
       _items:
       - _id: 0
         _view: {fileID: 1265195728017899968, guid: bceefb2a39f6db74d9bc9d006687b7f1,
           type: 3}
-        _config:
-          _animatorLayer: 1
-          _useCooldown: 1
+        _config: {fileID: 0}
+  _vfxLibrary: {fileID: 11400000, guid: c841e63ffa932ab4299ef287336759ee, type: 2}

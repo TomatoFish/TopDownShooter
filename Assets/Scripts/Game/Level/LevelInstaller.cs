@@ -14,6 +14,7 @@ namespace Game.Level
             Container.BindInterfacesTo<UnitSpawnController>().AsSingle().NonLazy();
             Container.BindInterfacesTo<UpdateManager>().AsSingle().NonLazy();
             Container.BindInterfacesTo<UnitRegistry>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<VFXManager>().AsSingle().NonLazy();
 
             SignalsDeclare();
             InjectSpawners();

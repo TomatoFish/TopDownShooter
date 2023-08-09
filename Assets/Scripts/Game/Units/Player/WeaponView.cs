@@ -12,12 +12,17 @@ namespace Game.Level
         [SerializeField] private ParticleSystem _hitEffect;
 
         [Inject] private SignalBus _signalBus;
+        [Inject] private VFXManager _vfxManager;
         
         public override Transform AimSightTransform => _aimSightTransform;
         
         public override bool Use()
         {
-            _muzzleFlash.Play();
+            var muzzleFlash = _vfxManager.Get<ParticleSystem>("bullet_muzzle_flash");
+            muzzleFlash.transform.SetPositionAndRotation(_muzzleTransform.position, _muzzleTransform.rotation);
+            muzzleFlash.Play();
+            _vfxManager.ReturnToPoolDelayed(muzzleFlash.gameObject, muzzleFlash.main.duration);
+            
             if (Physics.Raycast(_muzzleTransform.position, _muzzleTransform.forward, out var hit))
             {
                 SpawnBulletTrail(hit.point);
@@ -37,24 +42,21 @@ namespace Game.Level
             return true;
         }
 
-        // todo: change to vfx manager
         private void SpawnBulletTrail(Vector3 targetPoint)
         {
-            var trail = Instantiate(_bulletTrail);
+            var trail = _vfxManager.Get<LineRenderer>("bullet_trail", 0.1f);
             trail.gameObject.SetActive(true);
             trail.SetPosition(0, _muzzleTransform.position);
             trail.SetPosition(1, targetPoint);
-            Destroy(trail.gameObject, 0.1f);
         }
         
-        // todo: change to vfx manager
         private void SpawnHitEffect(Vector3 targetPoint, Vector3 targetnormal)
         {
-            var effect = Instantiate(_hitEffect);
+            var effect = _vfxManager.Get<ParticleSystem>("bullet_hit_metal");
             effect.transform.position = targetPoint;
             effect.transform.forward = targetnormal;
             effect.Play();
-            Destroy(effect.gameObject, effect.main.duration);
+            _vfxManager.ReturnToPoolDelayed(effect.gameObject, effect.main.duration);
         }
     }
 }
